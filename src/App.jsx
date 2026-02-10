@@ -5,6 +5,7 @@ import Categorys from './Catetorys'
 function App() {
   const [products, setProducts] = useState([])
   const [categorys, setCategorys] = useState([])
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const getProducts = () => {
@@ -13,14 +14,15 @@ function App() {
         .then(data => {
           setProducts(data)
           setCategorys(data)
-        });
+        })
+        .finally(() => setLoading(false))
     }
     getProducts()
   }, [])
 
   const btnList = categorys.map(el => el.category)
   const btnCat = [...new Set(btnList)]
-console.log(btnCat)
+  console.log(btnCat)
   const currCat = products.map(el => el.category)
   const showCurrCat = [...new Set(currCat)]
 
@@ -35,21 +37,41 @@ console.log(btnCat)
     setProducts(categorys)
   }
 
-  console.log(products)
-  console.log(categorys)
+  // console.log(products)
+  // console.log(categorys)
+
+  // loading page
+  if (loading) {
+    return (
+      <div class="fixed inset-0 bg-gray-100 flex items-center justify-center">
+        <div class="relative flex items-center justify-center">
+          <div class="w-16 h-16 border-10 border-blue-200 rounded-full"></div>
+
+          <div class="absolute w-16 h-16 border-10 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+        </div>
+        <p class="ml-4 text-gray-700 text-2xl font-medium">Loading...</p>
+      </div>
+    )
+  }
   return (
     <>
-      <div className='id1  h-[auto]'>
+      <div className='id1 h-auto'>
         {/* <h1>Product Fetch&Filter</h1>
         <hr /> */}
 
-        <div>
-          <h1 className='text-center m-5 text-2xl capitalize'>Current Category: {showCurrCat.length > 1 ? 'All' : showCurrCat} </h1>
-          <h2 className='text-center m-5 text-2xl capitalize'>Amount: {products.length}</h2>
+        <div className='bg-[#213448] text-white  flex w-full justify-between '>
+          <div className="rheader flex mx-5">
+          <img src="https://www.svgrepo.com/show/235061/shop-commerce.svg" alt="" className='w-13 ' />
+          </div>
+    
+          <div className="rheader flex">
+            <h1 className='m-5 text-xl capitalize'>Current Category: <span className='font-bold'>{showCurrCat.length > 1 ? 'All' : showCurrCat}</span> </h1>
+            <h2 className='m-5 text-xl capitalize'>Amount: {products.length}</h2>
+          </div>
         </div>
 
         {/* catelog btn */}
-        <div className='flex gap-10  justify-center animate-fade-up pt-5'>
+        <div className='flex gap-10  mx-10 justify-center animate-fade-up pt-5'>
           <Categorys
             btnCat={btnCat}
             hdlClick={hdlClick}
